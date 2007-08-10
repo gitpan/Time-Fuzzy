@@ -12,12 +12,13 @@ use warnings;
 use strict;
 
 use DateTime;
+use DateTime::Duration;
 
 use base qw[ Exporter ];
 our @EXPORT = qw[ fuzzy ];
 
-our $VERSION = '0.11';
-
+our $VERSION   = '0.20';
+our $FUZZINESS = 'medium';
 
 #--
 # private vars
@@ -30,6 +31,17 @@ my %daytime = ( # define the periods of the day
     'afternoon'     => [ 14, 15, 16, 17, 18 ],
     'evening'       => [ 19, 20, 21 ],
     'late evening'  => [ 22, 23 ],
+);
+my @hourtime = ( # defining the periods of the hour
+    "%s o'clock", 'five past %s', 'ten past %s',
+    'quarter past %s', 'twenty past %s', 'twenty five past %s',
+    'half past %s', 'twenty five to %2$s', 'twenty to %2$s',
+    'quarter to %2$s', 'ten to %2$s', 'five to %2$s',
+    q{%2$s o'clock}, # needed for 58-59
+);
+my @hours = (
+    'midnight',
+   qw[ one two three four five six seven eight nine ten eleven noon ] x 2,
 );
 my @daytime; # a 24-slots array, one for each hour
 { # init @daytime by walking %daytime
@@ -44,7 +56,49 @@ my @daytime; # a 24-slots array, one for each hour
 # public subs
 
 sub fuzzy {
-    my $dt = $_[0] || DateTime->now;
+    my $dt = $_[0] || DateTime->now( time_zone=>"local" );
+    my %fuzzysub = (
+        low    => \&_fuzzy_low,
+        medium => \&_fuzzy_medium,
+    );
+    return $fuzzysub{$FUZZINESS}->($dt);
+}
+
+
+#--
+# private subs
+
+#
+# my $fuz = _fuzzy_low($dt)
+#
+# Return a fuzzy time defined by $dt. The fuzziness is a bit low, that
+# is, 5 minutes in this case.
+#
+sub _fuzzy_low {
+    my ($dt1) = @_;
+
+    my $sector = ($dt1->minute + 2) / 5;
+    my $hour1 = $hours[$dt1->hour];
+    
+    # compute next hour, for 2nd half of the hour.
+    my $dt2   = $dt1 + DateTime::Duration->new(hours=>1);
+    my $hour2 = $hours[$dt2->hour];
+
+    # compute fuzzy.
+    my $fuzzy = sprintf $hourtime[$sector], $hour1, $hour2;
+    $fuzzy =~ s/^(midnight|noon) o'clock/$1/; # special case
+    return $fuzzy;
+}
+
+
+#
+# my $fuz = _fuzzy_medium($dt)
+#
+# Return a fuzzy time defined by $dt. The fuzziness is medium, that
+# is, around 3 hours in this case.
+#
+sub _fuzzy_medium {
+    my ($dt) = @_;
     return $daytime[$dt->hour];
 }
 
@@ -63,6 +117,7 @@ Time::Fuzzy - Time read like a human, with some fuzziness
     use Time::Fuzzy;
 
     my $now = fuzzy();
+    $Time::Fuzzy::FUZZINESS = 'low';
     my $fuz = fuzzy( DateTime->new(...) );
 
 
@@ -84,6 +139,14 @@ way computer deal with time.
 
 Return the fuzzy time defined by C<$dt>, a C<DateTime> object. If no
 argument, return the (fuzzy) current time.
+
+
+
+=head2 Fuziness factor
+
+By default, C<Time::Fuzzy> is using a medium fuzziness factor. You can
+change that by modifying C<$Time::Fuzzy::FUZZINESS>. The accepted values
+are C<low> and C<medium>.
 
 
 
