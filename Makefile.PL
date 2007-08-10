@@ -19,6 +19,7 @@ WriteMakefile(
     ABSTRACT_FROM       => 'lib/Time/Fuzzy.pm',
     PL_FILES            => {},
     PREREQ_PM => {
+        'DateTime'   => 0,
         'Test::More' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

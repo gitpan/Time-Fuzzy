@@ -25,6 +25,7 @@ my $builder = Module::Build->new (
         'Test::More' => 0,
     },
     requires       => { 
+        'DateTime'   => 0,
     },
 );
 
