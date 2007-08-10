@@ -1,7 +1,7 @@
 Time::Fuzzy
 ===========
 
-Nobody will ever say "it's 11:57". They will just say "it's noon". This
+Nobody will ever say "it's 11:57". People just say "it's noon". This
 Perl module does just the same: it adds some human fuzziness to the way
 computer deal with time.
 

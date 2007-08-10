@@ -10,6 +10,10 @@ High-level changelog
 Low-level changelog
 ===================
 
+0.11 Fri Aug 10 16:24:15 CEST 2007
+ - fuzzy() now accepts a DateTime param
+ - added tests for fuzzy()
+
 0.10 Fri Aug 10 14:07:06 CEST 2007
  - fuzzy() now return an actual fuzzy time depending on current time
 

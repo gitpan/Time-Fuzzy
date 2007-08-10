@@ -16,10 +16,13 @@ use DateTime;
 use base qw[ Exporter ];
 our @EXPORT = qw[ fuzzy ];
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 
-my %daytime = (
+#--
+# private vars
+
+my %daytime = ( # define the periods of the day
     'night'         => [ 0, 1, 2, 3, 4 ],
     'early morning' => [ 5, 6, 7 ],
     'morning'       => [ 8, 9, 10 ],
@@ -28,14 +31,20 @@ my %daytime = (
     'evening'       => [ 19, 20, 21 ],
     'late evening'  => [ 22, 23 ],
 );
-my @daytime;
-foreach my $dt ( keys %daytime ) {
-    my $hours = $daytime{$dt};
-    $daytime[$_] = $dt for @$hours;
+my @daytime; # a 24-slots array, one for each hour
+{ # init @daytime by walking %daytime
+    foreach my $dt ( keys %daytime ) {
+        my $hours = $daytime{$dt};
+        $daytime[$_] = $dt for @$hours;
+    }
 }
 
+
+#--
+# public subs
+
 sub fuzzy {
-    my ($dt) = DateTime->now;
+    my $dt = $_[0] || DateTime->now;
     return $daytime[$dt->hour];
 }
 
@@ -52,13 +61,16 @@ Time::Fuzzy - Time read like a human, with some fuzziness
 =head1 SYNOPSIS
 
     use Time::Fuzzy;
-    print fuzzy( ) . "\n";
+
+    my $now = fuzzy();
+    my $fuz = fuzzy( DateTime->new(...) );
+
 
 
 
 =head1 DESCRIPTION
 
-Nobody will ever say "it's 11:57". They will just say "it's noon".
+Nobody will ever say "it's 11:57". People just say "it's noon".
 
 This Perl module does just the same: it adds some human fuzziness to the
 way computer deal with time.
@@ -68,9 +80,10 @@ way computer deal with time.
 
 =head1 FUNCTIONS
 
-=head2 my $fuzzy = fuzzy( )
+=head2 my $fuzzy = fuzzy( [ $dt ] )
 
-Return the (fuzzy) current time.
+Return the fuzzy time defined by C<$dt>, a C<DateTime> object. If no
+argument, return the (fuzzy) current time.
 
 
 
