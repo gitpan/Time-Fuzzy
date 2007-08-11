@@ -3,13 +3,17 @@ Revision history for Time-Fuzzy
 High-level changelog
 ====================
 
-0.2x  fuziness factor: multiple implementations
+0.3x  oop-style implementation
+0.2x  fuzziness factor: multiple implementations
 0.1x  actual fuzzy implementation
 0.0x  initial releases
 
 
 Low-level changelog
 ===================
+
+0.30 Sat Aug 11 18:01:01 CEST 2007
+ - oop style available
 
 0.22 Sat Aug 11 17:41:41 CEST 2007
  - new fuzziness factor: high

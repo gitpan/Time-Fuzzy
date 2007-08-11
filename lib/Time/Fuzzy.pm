@@ -14,10 +14,11 @@ use strict;
 use DateTime;
 use DateTime::Duration;
 
-use base qw[ Exporter ];
+use base qw[ Exporter Class::Accessor::Fast ];
 our @EXPORT = qw[ fuzzy ];
+__PACKAGE__->mk_accessors( qw[ dt fuzziness ] );
 
-our $VERSION   = '0.22';
+our $VERSION   = '0.30';
 our $FUZZINESS = 'medium';
 
 #--
@@ -82,6 +83,30 @@ sub fuzzy {
         high   => \&_fuzzy_high,
     );
     return $fuzzysub{$FUZZINESS}->($dt);
+}
+
+
+#--
+# public methods
+
+sub new {
+    my $pkg = shift;
+    my %params = (
+        dt       => DateTime->now( time_zone=>'local' ),
+        fuziness => $FUZZINESS,
+        @_,
+    );
+    return bless \%params, $pkg;
+}
+
+sub as_str {
+    my ($self) = @_;
+    my %fuzzysub = (
+        low    => \&_fuzzy_low,
+        medium => \&_fuzzy_medium,
+        high   => \&_fuzzy_high,
+    );
+    return $fuzzysub{$self->fuzziness}->($self->dt);
 }
 
 
@@ -159,6 +184,8 @@ Time::Fuzzy - Time read like a human, with some fuzziness
     $Time::Fuzzy::FUZZINESS = 'low'; # or 'high', 'medium' (default)
     my $fuz = fuzzy( DateTime->new(...) );
 
+    my $fuzzy = Time::Fuzzy->new;
+    print $fuzzy->as_str;
 
 
 
@@ -168,6 +195,10 @@ Nobody will ever say "it's 11:57". People just say "it's noon".
 
 This Perl module does just the same: it adds some human fuzziness to the
 way computer deal with time.
+
+By default, C<Time::Fuzzy> is using a medium fuzziness factor. You can
+change that by modifying C<$Time::Fuzzy::FUZZINESS>. The accepted values
+are C<low>, C<medium> or C<high>.
 
 
 
@@ -181,11 +212,34 @@ argument, return the (fuzzy) current time.
 
 
 
-=head2 Fuziness factor
+=head1 METHODS
 
-By default, C<Time::Fuzzy> is using a medium fuzziness factor. You can
-change that by modifying C<$Time::Fuzzy::FUZZINESS>. The accepted values
-are C<low>, C<medium> or C<high>.
+If you prefer, you can use C<Time::Fuzzy> in a OOP style. In that case,
+the following methods are available.
+
+
+
+=head2 my $fuzzy = Item::Fuzzy->new( [dt=>$dt, fuzziness=>fuzziness] )
+
+This is the constructor. It accepts the following params:
+
+
+=over 4
+
+=item . dt => $dt: a C<DateTime> object, defaults to current time.
+
+=item . fuzziness => $fuzziness: the wanted fuziness, defaults to
+current C<$Time::Fuzzy::FUZZINESS>.
+
+=back
+
+
+Additionally, the accessors C<dt> and C<fuzziness> are available.
+
+
+=head2 my $str = $fuzzy->as_str()
+
+Return the fuzzy string of the current time of the object.
 
 
 
