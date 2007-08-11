@@ -17,12 +17,13 @@ use DateTime::Duration;
 use base qw[ Exporter ];
 our @EXPORT = qw[ fuzzy ];
 
-our $VERSION   = '0.20';
+our $VERSION   = '0.21';
 our $FUZZINESS = 'medium';
 
 #--
 # private vars
 
+# - for medium fuzziness
 my %daytime = ( # define the periods of the day
     'night'         => [ 0, 1, 2, 3, 4 ],
     'early morning' => [ 5, 6, 7 ],
@@ -32,6 +33,15 @@ my %daytime = ( # define the periods of the day
     'evening'       => [ 19, 20, 21 ],
     'late evening'  => [ 22, 23 ],
 );
+my @daytime; # a 24-slots array, one for each hour
+{ # init @daytime by walking %daytime
+    foreach my $dt ( keys %daytime ) {
+        my $hours = $daytime{$dt};
+        $daytime[$_] = $dt for @$hours;
+    }
+}
+
+# - for low fuzziness
 my @hourtime = ( # defining the periods of the hour
     "%s o'clock", 'five past %s', 'ten past %s',
     'quarter past %s', 'twenty past %s', 'twenty five past %s',
@@ -41,15 +51,9 @@ my @hourtime = ( # defining the periods of the hour
 );
 my @hours = (
     'midnight',
-   qw[ one two three four five six seven eight nine ten eleven noon ] x 2,
+    qw[ one two three four five six seven eight nine ten eleven noon ],
+    qw[ one two three four five six seven eight nine ten eleven midnight ],
 );
-my @daytime; # a 24-slots array, one for each hour
-{ # init @daytime by walking %daytime
-    foreach my $dt ( keys %daytime ) {
-        my $hours = $daytime{$dt};
-        $daytime[$_] = $dt for @$hours;
-    }
-}
 
 
 #--
@@ -77,16 +81,23 @@ sub fuzzy {
 sub _fuzzy_low {
     my ($dt1) = @_;
 
-    my $sector = ($dt1->minute + 2) / 5;
+    my $sector = int( ($dt1->minute + 2) / 5 );
     my $hour1 = $hours[$dt1->hour];
     
     # compute next hour, for 2nd half of the hour.
     my $dt2   = $dt1 + DateTime::Duration->new(hours=>1);
     my $hour2 = $hours[$dt2->hour];
 
+    # midnight or noon don't need o'clock appended.
+    return $hour1
+        if ($sector==0  && $dt1->hour==0)    # 0:01
+        || ($sector==0  && $dt1->hour==12);  # 12:02
+    return $hour2
+        if ($sector==12 && $dt1->hour==23)   # 23:58
+        || ($sector==12 && $dt1->hour==11);  # 11:59
+
     # compute fuzzy.
     my $fuzzy = sprintf $hourtime[$sector], $hour1, $hour2;
-    $fuzzy =~ s/^(midnight|noon) o'clock/$1/; # special case
     return $fuzzy;
 }
 

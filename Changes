@@ -11,8 +11,13 @@ High-level changelog
 Low-level changelog
 ===================
 
+0.21 Sat Aug 11 10:07:00 CEST 2007
+ - reintroduced true logic to deal with midnight/noon, instead of a hack
+ - should void fail reports about qw[] x 2 needing to declare x (cf
+   http://www.nntp.perl.org/group/perl.cpan.testers/2007/08/msg564525.html)
+
 0.20 Fri Aug 10 18:10:32 CEST 2007
- - fuzzy() uses current time by default, but now in the local timezone
+ - fuzzy() defaults to current time, but now in the local timezone
  - new sub _fuzzy_low() returning time without too much fuzzyness
  - old fuzzy() moved to _fuzzy_medium()
  - fuzzy() now acts depending on the $FUZZINESS factor
