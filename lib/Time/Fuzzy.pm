@@ -17,11 +17,26 @@ use DateTime::Duration;
 use base qw[ Exporter ];
 our @EXPORT = qw[ fuzzy ];
 
-our $VERSION   = '0.21';
+our $VERSION   = '0.22';
 our $FUZZINESS = 'medium';
 
 #--
 # private vars
+
+# - for high fuzziness
+my %weektime = ( # define the periods of the week
+    'start of week'  => [ 1 ],
+    'middle of week' => [ 2..4 ],
+    'end of week'    => [ 5 ],
+    'week-end!'      => [ 6,7 ],
+);
+my @weektime; # a 7-slots array, one for each days
+{ # init @weektime by walking %weektime
+    foreach my $wt ( keys %weektime ) {
+        my $days = $weektime{$wt};
+        $weektime[$_] = $wt for @$days;
+    }
+}
 
 # - for medium fuzziness
 my %daytime = ( # define the periods of the day
@@ -60,10 +75,11 @@ my @hours = (
 # public subs
 
 sub fuzzy {
-    my $dt = $_[0] || DateTime->now( time_zone=>"local" );
+    my $dt = $_[0] || DateTime->now( time_zone=>'local' );
     my %fuzzysub = (
         low    => \&_fuzzy_low,
         medium => \&_fuzzy_medium,
+        high   => \&_fuzzy_high,
     );
     return $fuzzysub{$FUZZINESS}->($dt);
 }
@@ -114,6 +130,18 @@ sub _fuzzy_medium {
 }
 
 
+#
+# my $fuz = _fuzzy_high($dt)
+#
+# Return a fuzzy time defined by $dt. The fuzziness is high, that
+# is, around the day in this case.
+#
+sub _fuzzy_high {
+    my ($dt) = @_;
+    return $weektime[$dt->dow];
+}
+
+
 1;
 __END__
 
@@ -128,7 +156,7 @@ Time::Fuzzy - Time read like a human, with some fuzziness
     use Time::Fuzzy;
 
     my $now = fuzzy();
-    $Time::Fuzzy::FUZZINESS = 'low';
+    $Time::Fuzzy::FUZZINESS = 'low'; # or 'high', 'medium' (default)
     my $fuz = fuzzy( DateTime->new(...) );
 
 
@@ -157,7 +185,7 @@ argument, return the (fuzzy) current time.
 
 By default, C<Time::Fuzzy> is using a medium fuzziness factor. You can
 change that by modifying C<$Time::Fuzzy::FUZZINESS>. The accepted values
-are C<low> and C<medium>.
+are C<low>, C<medium> or C<high>.
 
 
 

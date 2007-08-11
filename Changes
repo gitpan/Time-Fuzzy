@@ -11,6 +11,9 @@ High-level changelog
 Low-level changelog
 ===================
 
+0.22 Sat Aug 11 17:41:41 CEST 2007
+ - new fuzziness factor: high
+
 0.21 Sat Aug 11 10:07:00 CEST 2007
  - reintroduced true logic to deal with midnight/noon, instead of a hack
  - should void fail reports about qw[] x 2 needing to declare x (cf
