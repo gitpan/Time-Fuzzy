@@ -11,6 +11,7 @@ package Time::Fuzzy;
 use warnings;
 use strict;
 
+use Class::Accessor::Fast;
 use DateTime;
 use DateTime::Duration;
 
@@ -18,7 +19,7 @@ use base qw[ Exporter Class::Accessor::Fast ];
 our @EXPORT = qw[ fuzzy ];
 __PACKAGE__->mk_accessors( qw[ dt fuzziness ] );
 
-our $VERSION   = '0.30';
+our $VERSION   = '0.31';
 our $FUZZINESS = 'medium';
 
 #--
