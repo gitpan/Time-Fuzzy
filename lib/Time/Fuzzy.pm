@@ -19,7 +19,7 @@ use base qw[ Exporter Class::Accessor::Fast ];
 our @EXPORT = qw[ fuzzy ];
 __PACKAGE__->mk_accessors( qw[ dt fuzziness ] );
 
-our $VERSION   = '0.31';
+our $VERSION   = '0.32';
 our $FUZZINESS = 'medium';
 
 #--
@@ -93,13 +93,14 @@ sub fuzzy {
 sub new {
     my $pkg = shift;
     my %params = (
-        dt       => DateTime->now( time_zone=>'local' ),
-        fuziness => $FUZZINESS,
+        dt        => DateTime->now( time_zone=>'local' ),
+        fuzziness => $FUZZINESS,
         @_,
     );
     return bless \%params, $pkg;
 }
 
+use overload '""' => \&as_str;
 sub as_str {
     my ($self) = @_;
     my %fuzzysub = (
@@ -240,7 +241,8 @@ Additionally, the accessors C<dt> and C<fuzziness> are available.
 
 =head2 my $str = $fuzzy->as_str()
 
-Return the fuzzy string of the current time of the object.
+Return the fuzzy string of the current time of the object. This method
+is also the overloaded stringified method.
 
 
 

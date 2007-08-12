@@ -12,6 +12,10 @@ High-level changelog
 Low-level changelog
 ===================
 
+0.32 Sun Aug 12 15:23:43 CEST 2007
+ - fixed bug in time::fuzzy constructor
+ - added overload for string output
+
 0.31 Sun Aug 12 15:01:50 CEST 2007
  - using class-accessor-fast before inheriting from it (should quiet
    fail reports)
