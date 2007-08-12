@@ -22,10 +22,11 @@ my $builder = Module::Build->new (
         map { ( '*/' x $_ ) . '*~' } 0..4 ],
     script_files   => [ ],
     build_requires => {
-        'Test::More' => 0,
+        'Test::More'      => 0,
     },
     requires       => { 
-        'DateTime'   => 0,
+        'Class::Accessor' => 0,
+        'DateTime'        => 0,
     },
 );
 

@@ -1,6 +1,6 @@
 ---
 name: Time-Fuzzy
-version: 0.32
+version: 0.33
 author:
   - 'Jerome Quelin <jquelin@cpan.org>'
 abstract: 'Time read like a human, with some fuzziness'
@@ -8,13 +8,14 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 requires:
+  Class::Accessor: 0
   DateTime: 0
 build_requires:
   Test::More: 0
 provides:
   Time::Fuzzy:
     file: lib/Time/Fuzzy.pm
-    version: 0.32
+    version: 0.33
 generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

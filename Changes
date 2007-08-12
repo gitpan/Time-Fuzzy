@@ -12,6 +12,9 @@ High-level changelog
 Low-level changelog
 ===================
 
+0.33 Sun Aug 12 21:57:36 CEST 2007
+ - added missing prereq class::accessor
+
 0.32 Sun Aug 12 15:23:43 CEST 2007
  - fixed bug in time::fuzzy constructor
  - added overload for string output
