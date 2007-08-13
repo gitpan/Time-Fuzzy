@@ -12,6 +12,10 @@ High-level changelog
 Low-level changelog
 ===================
 
+0.34 Mon Aug 13 10:59:27 CEST 2007
+ - forcing $ENV{TZ} in the tests since some cpan testers have a weird
+   env with no local timezone
+
 0.33 Sun Aug 12 21:57:36 CEST 2007
  - added missing prereq class::accessor
 

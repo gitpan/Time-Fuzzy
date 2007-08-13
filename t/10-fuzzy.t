@@ -14,6 +14,8 @@ use warnings;
 use Test::More tests => 39;
 use Time::Fuzzy;
 
+$ENV{TZ} = 'UTC'; # some cpan testers have a weird env with no local timezone.
+
 my $dt = DateTime->new(year=>1976);
 
 
