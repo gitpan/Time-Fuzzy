@@ -12,6 +12,9 @@ High-level changelog
 Low-level changelog
 ===================
 
+0.35 Mon Nov  5 19:27:12 CET 2007
+ - really enforcing $ENV{TZ} before any module loading
+
 0.34 Mon Aug 13 10:59:27 CEST 2007
  - forcing $ENV{TZ} in the tests since some cpan testers have a weird
    env with no local timezone
