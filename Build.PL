@@ -22,11 +22,17 @@ my $builder = Module::Build->new (
         map { ( '*/' x $_ ) . '*~' } 0..4 ],
     script_files   => [ ],
     build_requires => {
+        'Class::Accessor' => 0,
+        'DateTime'        => 0,
         'Test::More'      => 0,
     },
     requires       => { 
         'Class::Accessor' => 0,
         'DateTime'        => 0,
+    },
+    recommends     => {
+        'Test::Pod'           => 0,
+        'Test::Pod::Coverage' => 0,
     },
 );
 

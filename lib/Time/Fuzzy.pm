@@ -19,7 +19,7 @@ use base qw[ Exporter Class::Accessor::Fast ];
 our @EXPORT = qw[ fuzzy ];
 __PACKAGE__->mk_accessors( qw[ dt fuzziness ] );
 
-our $VERSION   = '0.35';
+our $VERSION   = '0.36';
 our $FUZZINESS = 'medium';
 
 #--
